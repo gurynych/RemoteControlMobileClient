@@ -1,0 +1,42 @@
+﻿<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:local="clr-namespace:RemoteControlMobileClient"
+             x:Class= "RemoteControlMobileClient.App"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:mvvm="clr-namespace:RemoteControlMobileClient.MVVM"
+             windows:Application.ImageDirectory="Assets">
+    <Application.Resources>
+        <ResourceDictionary>
+            <mvvm:ViewModelLocator x:Key="vmLocator" />
+            <Style TargetType="dxe:TextEdit">
+                <Setter Property="CornerRadius"
+                        Value="10" />
+                <Setter Property="Margin"
+                        Value="5" />
+            </Style>
+            <Style TargetType="dxe:PasswordEdit">
+                <Setter Property="CornerRadius"
+                        Value="10" />
+                <Setter Property="Margin"
+                        Value="5" />
+            </Style>
+            
+            <Color x:Key="Primary">#512BD4</Color>
+            <Color x:Key="PrimaryLight">#deedff</Color>
+            <Color x:Key="NormalText">#55575c</Color>
+            <Color x:Key="NormalHeaderText">#404144</Color>
+            <Color x:Key="NormalLightText">#959aa0</Color>
+            <Color x:Key="DrawerTitleTextColor">White</Color>
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="BarTextColor" Value="{StaticResource DrawerTitleTextColor}"/>
+            </Style>
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="TextColor" Value="White"/>
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

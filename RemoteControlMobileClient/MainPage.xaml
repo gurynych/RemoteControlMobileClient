@@ -1,0 +1,27 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxdf="clr-namespace:DevExpress.Maui.DataForm;assembly=DevExpress.Maui.Editors"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             ios:Page.UseSafeArea="true"
+             x:Class= "RemoteControlMobileClient.MainPage"
+             BindingContext="{x:Binding AuthentificationViewModel, Source={StaticResource vmLocator}}">
+    <ContentPage.Content>
+        <Grid RowDefinitions="auto,*,Auto">
+            <dxe:PasswordEdit Text="{x:Binding AuthPassword}"
+                              ErrorText="{x:Binding AuthPasswordError}"
+                              HasError="{x:Binding AuthPasswordHasError}"
+                              LabelText="Password"
+                              PasswordIconVisibility="Auto"
+                              ClearIconVisibility="Auto">
+            </dxe:PasswordEdit>
+            <Button Grid.Row="2" Margin="25,20,25,20"
+                    Text="Learn more"
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{x:Binding FooCommand}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

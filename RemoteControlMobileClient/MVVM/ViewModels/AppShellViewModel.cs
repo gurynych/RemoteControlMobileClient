@@ -1,11 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using RemoteControlMobileClient.MVVM.LifeCycles;
 using RemoteControlMobileClient.Pages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RemoteControlMobileClient.MVVM.ViewModels
 {
@@ -13,19 +8,29 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
     {
         public AppShellViewModel()
         {
-            Routing.RegisterRoute(nameof(AuthorizationPage), typeof(AuthorizationPage));
-            Routing.RegisterRoute(nameof(RegistrationPage), typeof(RegistrationPage));
+            Routing.RegisterRoute(nameof(RegistrationPage), typeof(RegistrationPage));          
             Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
+            Routing.RegisterRoute(nameof(ConnectedDevicesPage), typeof(ConnectedDevicesPage));
+            Routing.RegisterRoute(nameof(NestedFilesInDirectoryPage), typeof(NestedFilesInDirectoryPage));
         }
 
         [RelayCommand]
         public Task SetStartUpPage()
         {
-            //TODO: добавить проверку токена
-            if (true)
+            /*RequestPermissionsService requestPermissionsService = new RequestPermissionsService();
+            bool accept = false;
+            while (!accept)
             {
-                return Shell.Current.GoToAsync(nameof(AuthorizationPage));
+                accept = requestPermissionsService.RequestPermission();
+            }*/
+
+            //TODO: добавить проверку токена
+            if (false)
+            {
+                return Shell.Current.GoToAsync(nameof(MainPage));
             }
+
+            return Task.CompletedTask;
         }
     }
 }

@@ -2,8 +2,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:windows="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
              xmlns:local="clr-namespace:RemoteControlMobileClient"
-             x:Class= "RemoteControlMobileClient.App"
+             x:Class="RemoteControlMobileClient.App"
              xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
+             xmlns:dxdf="clr-namespace:DevExpress.Maui.DataForm;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
              xmlns:mvvm="clr-namespace:RemoteControlMobileClient.MVVM"
              windows:Application.ImageDirectory="Assets">
     <Application.Resources>
@@ -12,16 +17,39 @@
             <Style TargetType="dxe:TextEdit">
                 <Setter Property="CornerRadius"
                         Value="10" />
-                <Setter Property="Margin"
-                        Value="5" />
             </Style>
             <Style TargetType="dxe:PasswordEdit">
                 <Setter Property="CornerRadius"
                         Value="10" />
-                <Setter Property="Margin"
-                        Value="5" />
             </Style>
-            
+            <Style TargetType="Label">
+                <Setter Property="FontSize"
+                        Value="16" />
+            </Style>
+            <Style TargetType="dx:DXButton">
+                <Setter Property="FontSize"
+                        Value="16" />
+                <!--<Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light={StaticResource ButtonOnPrimaryColorLigthTheme},
+                        Dark={StaticResource ButtonOnPrimaryColorDarkTheme}}" />
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource TextColorOnLigthButton}, 
+                        Dark={StaticResource TextColorOnDarkButton}}" />-->
+            </Style>
+            <!--<Style TargetType="Label">
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light={StaticResource TextLigthColor}, 
+                        Dark={StaticResource TextDarkColor}}" />
+            </Style>-->
+
+            <Color x:Key="ButtonOnPrimaryColorLigthTheme">#1f1f1f</Color>
+            <Color x:Key="ButtonOnPrimaryColorDarkTheme">#efefef</Color>
+            <Color x:Key="ButtonOnCardColorLigthTheme">#efefef</Color>
+            <Color x:Key="ButtonOnCardColorDarkTheme">#1f1f1f</Color>
+            <Color x:Key="TextColorOnLigthButton">#1f1f1f</Color>
+            <Color x:Key="TextColorOnDarkButton">#efefef</Color>
+            <Color x:Key="TextLigthColor">#1f1f1f</Color>
+            <Color x:Key="TextDarkColor">#efefef</Color>
             <Color x:Key="Primary">#512BD4</Color>
             <Color x:Key="PrimaryLight">#deedff</Color>
             <Color x:Key="NormalText">#55575c</Color>
@@ -29,14 +57,18 @@
             <Color x:Key="NormalLightText">#959aa0</Color>
             <Color x:Key="DrawerTitleTextColor">White</Color>
             <Style TargetType="NavigationPage">
-                <Setter Property="BarBackgroundColor" Value="{StaticResource Primary}"/>
-                <Setter Property="BarTextColor" Value="{StaticResource DrawerTitleTextColor}"/>
+                <Setter Property="BarBackgroundColor"
+                        Value="{StaticResource Primary}" />
+                <Setter Property="BarTextColor"
+                        Value="{StaticResource DrawerTitleTextColor}" />
             </Style>
-            <Style x:Key="PrimaryButton" TargetType="Button">
-                <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
-                <Setter Property="TextColor" Value="White"/>
+            <Style x:Key="PrimaryButton"
+                   TargetType="Button">
+                <Setter Property="BackgroundColor"
+                        Value="{StaticResource Primary}" />
+                <Setter Property="TextColor"
+                        Value="White" />
             </Style>
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

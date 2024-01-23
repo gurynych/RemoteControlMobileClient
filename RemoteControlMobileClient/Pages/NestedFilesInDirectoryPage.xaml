@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RemoteControlMobileClient.Pages.NestedFilesInDirectoryPage"
+             xmlns:netmes="clr-namespace:NetworkMessage.Models;assembly=NetworkMessage"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
+             xmlns:dxga="clr-namespace:DevExpress.Maui.Gauges;assembly=DevExpress.Maui.Gauges"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:dts="clr-namespace:RemoteControlMobileClient.MVVM.DataTemplates"
+             xmlns:converters="clr-namespace:RemoteControlMobileClient.MVVM.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             ios:Page.UseSafeArea="true"
+             Title="NestedFilesInDirectoryPage"
+             BindingContext="{x:Binding NestedFilesInDirectoryViewModel, Source={StaticResource vmLocator}}">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Loaded"
+                                        Command="{Binding LoadConnectedDevicesCommand}" />
+    </ContentPage.Behaviors>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="MyFileInfoTemplate">
+                <Grid ColumnDefinitions="*,*,*,*,auto"
+                      Margin="0,2.5">
+                    <Label Grid.Column="0"
+                           Text="{x:Binding Name}"
+                           TextColor="#efefef" />
+                    <Label Grid.Column="1"
+                           Text="{x:Binding CreationDate}"
+                           TextColor="#efefef" />
+                    <Label Grid.Column="2"
+                           Text="{x:Binding ChangingDate}"
+                           TextColor="#efefef"/>
+                    <Label Grid.Column="3"
+                           Text="{x:Binding Size}"
+                           TextColor="#efefef" />
+                    <dx:DXButton Grid.Column="4"
+                                 Command="{x:Binding BindingContext.DownloadFileCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}"
+                                 CommandParameter="{x:Binding Name}"
+                                 Icon="download_btn"
+                                 IconColor="#efefef"
+                                 PressedIconColor="#cfcfcf"
+                                 ButtonType="ToolButton"
+                                 DisabledIconColor="#afafaf" />
+                </Grid>
+            </DataTemplate>
+            <DataTemplate x:Key="MyDirectoryInfoTemplate">
+                <Grid ColumnDefinitions="*,*,*,*,auto"
+                      Margin="0,2.5">
+                    <Label Grid.Column="0"
+                           Text="{x:Binding Name}"
+                           TextColor="#efefef" />
+                    <Label Grid.Column="1"
+                           Text="{x:Binding CreationDate}"
+                           TextColor="#efefef" />
+                    <Label Grid.Column="2"
+                           Text="{x:Binding ChangingDate}"
+                           TextColor="#efefef" />
+                    <dx:DXButton Grid.Column="4"
+                                 Icon="download_btn"
+                                 IsEnabled="False"
+                                 IconColor="#efefef"
+                                 PressedIconColor="#cfcfcf"
+                                 ButtonType="ToolButton"
+                                 DisabledIconColor="#afafaf" />
+                </Grid>
+            </DataTemplate>
+            
+            <dts:NestedFileInfoDataTemplate x:Key="NestedFileInfoDataTemplate"
+                                            MyFileInfoTemplate="{StaticResource MyFileInfoTemplate}"
+                                            MyDirectoryInfoTemplate="{StaticResource MyDirectoryInfoTemplate}" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="auto,auto,*, auto, auto"
+          Padding="5">
+
+        <!--<HorizontalStackLayout HorizontalOptions="Start"
+                               Margin="10">
+        </HorizontalStackLayout>-->
+        
+        <Grid ColumnDefinitions="*,*,*,*,*,auto"
+              Grid.Row="1">
+            <Label Grid.Column="0"
+                   Text="Имя"
+                   TextColor="#efefef" />
+            <Label Grid.Column="1"
+                   Text="Дата создания"
+                   TextColor="#efefef" />
+            <Label Grid.Column="2"
+                   Text="Дата изменения"
+                   TextColor="#efefef" />
+            <Label Grid.Column="4"
+                   Text="Размер Мб"
+                   TextColor="#efefef" />
+            <Label Grid.Column="5"
+                   Text="Действие"
+                   TextColor="#efefef" />
+        </Grid>
+
+        <dxga:RadialProgressBar Grid.Row="2"
+                                IsIndeterminate="True"
+                                HeightRequest="100"
+                                WidthRequest="100"
+                                StartAngle="-90"
+                                Thickness="10"
+                                ValueIndicatorThickness="10"
+                                ValueIndicatorFill="#efefef"
+                                VerticalOptions="Center"
+                                SweepAngle="360"
+                                IsVisible="{x:Binding IsBusy}" />
+        <Grid Grid.Row="2">
+            <dxcv:DXCollectionView ItemsSource="{x:Binding AllData}"
+                                   ItemTemplate="{StaticResource NestedFileInfoDataTemplate}"
+                                   SelectionMode="Single"                                   
+                                   DoubleTapCommand="{x:Binding LoadNestedFilesInDirectoryCommand}"/>
+        </Grid>
+
+        <dx:DXButton Grid.Row="3"
+                     Content="Загрузить файлы"
+                     Command="{x:Binding LoadNestedFilesInRootDirectoryCommand}"
+                     Margin="20,0"
+                     TextColor="#1f1f1f"
+                     BackgroundColor="#efefef"
+                     PressedTextColor="#3f3f3f"
+                     PressedBackgroundColor="#cfcfcf"
+                     DisabledBackgroundColor="#5f5f5f"
+                     DisabledTextColor="#afafaf" />
+
+        <dx:DXButton Grid.Row="4"
+                     Content="Назад"
+                     Margin="20"
+                     Command="{x:Binding GoToConnectedDevicesPageCommand}"
+                     TextColor="#1f1f1f"
+                     BackgroundColor="#efefef"
+                     PressedTextColor="#3f3f3f"
+                     PressedBackgroundColor="#cfcfcf"
+                     DisabledBackgroundColor="#5f5f5f"
+                     DisabledTextColor="#afafaf" />
+    </Grid>
+</ContentPage>

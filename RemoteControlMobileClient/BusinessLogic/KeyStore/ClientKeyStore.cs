@@ -1,6 +1,9 @@
-﻿namespace RemoteControlMobileClient.BusinessLogic.KeyStore
+﻿using NetworkMessage.Cryptography.AsymmetricCryptography;
+using NetworkMessage.Cryptography.KeyStore;
+
+namespace RemoteControlMobileClient.BusinessLogic.KeyStore
 {
-    /*public class ClientKeyStore : AsymmetricKeyStoreBase
+    public class ClientKeyStore : AsymmetricKeyStoreBase
     {
         private readonly byte[] privateKey;
 
@@ -13,5 +16,5 @@
         {
             return privateKey;
         }
-    }*/
+    }
 }

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
+             xmlns:dxga="clr-namespace:DevExpress.Maui.Gauges;assembly=DevExpress.Maui.Gauges"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:converters="clr-namespace:RemoteControlMobileClient.MVVM.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             ios:Page.UseSafeArea="true"
+             x:Class="RemoteControlMobileClient.Pages.ConnectedDevicesPage"
+             Title="ConnectedDevicesPage"
+             BindingContext="{x:Binding ConnectedDeviceViewModel, Source={StaticResource vmLocator}}">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Loaded"
+                                        Command="{Binding LoadConnectedDevicesCommand}" />
+    </ContentPage.Behaviors>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label"
+                   x:Key="CardHeader">
+                <Setter Property="FontSize"
+                        Value="24" />
+                <Setter Property="FontAttributes"
+                        Value="Bold" />
+                <Setter Property="BackgroundColor"
+                        Value="Black" />
+                <Setter Property="TextColor"
+                        Value="#efefef" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid Padding="7"
+          RowDefinitions="*, auto">
+        <dxga:RadialProgressBar Grid.Row="0"    
+                                IsIndeterminate="True"
+                                HeightRequest="100"
+                                WidthRequest="100"
+                                StartAngle="-90"
+                                Thickness="10"
+                                ValueIndicatorThickness="10"
+                                ValueIndicatorFill="#efefef"
+                                VerticalOptions="Center"
+                                SweepAngle="360"
+                                IsVisible="{x:Binding IsBusy}" />
+
+
+        <dxcv:DXCollectionView ItemsSource="{x:Binding ConnectedDevices}"
+                               Margin="10">
+            <dxcv:DXCollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <dx:DXBorder CornerRadius="15"
+                                     BackgroundColor="#3f3f3f"
+                                     BorderColor="#efefef"
+                                     BorderThickness="0.3"
+                                     Margin="10,15">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding DeviceName}"
+                                       Style="{StaticResource CardHeader}"
+                                       Padding="20,7,0,7" />
+                                <BoxView HeightRequest="0.1"
+                                         Color="#efefef" />
+                                <HorizontalStackLayout Margin="40,10,5,0">
+                                    <Label FontSize="20"
+                                           TextColor="#efefef">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} {1} {2} ({3})">
+                                                <Binding Path="DeviceManufacturer" />
+                                                <Binding Path="DevicePlatform" />
+                                                <Binding Path="DevicePlatformVersion" />
+                                                <Binding Path="DeviceType" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                    <Ellipse WidthRequest="15"
+                                             HeightRequest="15"
+                                             Margin="10,0,0,0">
+                                        <Ellipse.Triggers>
+                                            <DataTrigger TargetType="Ellipse"
+                                                         Binding="{x:Binding IsConnected}"
+                                                         Value="true">
+                                                <Setter Property="Fill"
+                                                        Value="LimeGreen" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Ellipse"
+                                                         Binding="{x:Binding IsConnected}"
+                                                         Value="false">
+                                                <Setter Property="Fill"
+                                                        Value="Red" />
+                                            </DataTrigger>
+                                        </Ellipse.Triggers>
+                                    </Ellipse>
+                                </HorizontalStackLayout>
+
+                                <dx:DXButton Content="Команды"
+                                             HorizontalOptions="Start"
+                                             Margin="40,20"
+                                             Command="{x:Binding BindingContext.GetNestedFilesInDirectoryCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}"
+                                             CommandParameter="{x:Binding}"
+                                             TextColor="{DynamicResource TextColorOnDarkButton}"
+                                             BackgroundColor="{DynamicResource ButtonOnCardColorDarkTheme}"
+                                             PressedBackgroundColor="#3f3f3f"
+                                             PressedTextColor="#cfcfcf"
+                                             DisabledBackgroundColor="#5f5f5f"
+                                             DisabledTextColor="#8f8f8f" />
+                            </VerticalStackLayout>
+                        </dx:DXBorder>
+                    </Grid>
+                </DataTemplate>
+            </dxcv:DXCollectionView.ItemTemplate>
+        </dxcv:DXCollectionView>
+
+        <dx:DXButton Grid.Row="1"
+                     Content="Назад"
+                     Margin="20"
+                     Command="{x:Binding GoToMainPageCommand}"
+                     TextColor="#1f1f1f"
+                     BackgroundColor="#efefef"
+                     PressedTextColor="#3f3f3f"
+                     PressedBackgroundColor="#cfcfcf"
+                     DisabledBackgroundColor="#5f5f5f"
+                     DisabledTextColor="#afafaf" />
+    </Grid>
+</ContentPage>

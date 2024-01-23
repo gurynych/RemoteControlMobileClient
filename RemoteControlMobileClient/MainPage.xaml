@@ -1,5 +1,6 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
              xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
              xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
              xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
@@ -7,21 +8,87 @@
              xmlns:dxdf="clr-namespace:DevExpress.Maui.DataForm;assembly=DevExpress.Maui.Editors"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="true"
-             x:Class= "RemoteControlMobileClient.MainPage"
-             BindingContext="{x:Binding AuthentificationViewModel, Source={StaticResource vmLocator}}">
+             x:Class="RemoteControlMobileClient.MainPage"
+             BindingContext="{x:Binding MainViewModel, Source={StaticResource vmLocator}}">
     <ContentPage.Content>
-        <Grid RowDefinitions="auto,*,Auto">
-            <dxe:PasswordEdit Text="{x:Binding AuthPassword}"
-                              ErrorText="{x:Binding AuthPasswordError}"
-                              HasError="{x:Binding AuthPasswordHasError}"
-                              LabelText="Password"
-                              PasswordIconVisibility="Auto"
-                              ClearIconVisibility="Auto">
-            </dxe:PasswordEdit>
-            <Button Grid.Row="2" Margin="25,20,25,20"
-                    Text="Learn more"
-                    Style="{StaticResource PrimaryButton}"
-                    Command="{x:Binding FooCommand}"/>
-        </Grid>
+        <dx:DXBorder VerticalOptions="Center"
+                     BackgroundColor="#3f3f3f"
+                     CornerRadius="15"
+                     Margin="15">
+            <VerticalStackLayout>
+                <Label Text="{x:Binding IsConneted}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       Margin="15"
+                       HorizontalTextAlignment="Center">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{x:Binding IsConneted}"
+                                     Value="false">
+                            <Setter Property="TextColor"
+                                    Value="red" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label"
+                                     Binding="{x:Binding IsConneted}"
+                                     Value="true">
+                            <Setter Property="TextColor"
+                                    Value="LimeGreen" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+
+                <dx:DXButton Content="Переподключиться"
+                             Command="{x:Binding ReconnectCommand}"
+                             Margin="15"
+                             BackgroundColor="#1f1f1f"
+                             PressedBackgroundColor="#3f3f3f"
+                             DisabledBackgroundColor="#5f5f5f"
+                             TextColor="#efefef"
+                             PressedTextColor="#cfcfcf"
+                             DisabledTextColor="#afafaf" />
+
+                <dx:DXButton Content="Начать прослушивание"
+                             Command="{x:Binding StartListenCommand}"
+                             Margin="15"
+                             BackgroundColor="#1f1f1f"
+                             PressedBackgroundColor="#3f3f3f"
+                             DisabledBackgroundColor="#5f5f5f"
+                             TextColor="#efefef"
+                             PressedTextColor="#cfcfcf"
+                             DisabledTextColor="#afafaf" />
+
+                <dx:DXButton Content="Перестать прослушивать"
+                             Command="{x:Binding StopListenCommand}"
+                             Margin="15"
+                             BackgroundColor="#1f1f1f"
+                             PressedBackgroundColor="#3f3f3f"
+                             DisabledBackgroundColor="#5f5f5f"
+                             TextColor="#efefef"
+                             PressedTextColor="#cfcfcf"
+                             DisabledTextColor="#afafaf" />
+
+                <dx:DXButton Content="Список подключенных устройств"
+                             Command="{x:Binding GoToConnectedDevicesPageCommand}"
+                             Margin="15"
+                             BackgroundColor="#1f1f1f"
+                             PressedBackgroundColor="#3f3f3f"
+                             DisabledBackgroundColor="#5f5f5f"
+                             TextColor="#efefef"
+                             PressedTextColor="#cfcfcf"
+                             DisabledTextColor="#afafaf" />
+
+                <Label Text="{x:Binding ReceiveProcessProgress, StringFormat='Полученно байт: {0}'}"
+                       Margin="20,0" 
+                       FontSize="16"/>
+                <Label Text="{x:Binding SendProcessProgress, StringFormat='Отправлено байт: {0}'}"
+                       Margin="20,0"
+                       FontSize="16" />
+                
+                <Label Text="{x:Binding ActualAction, StringFormat='Выполняемое действие: {0}'}"
+                       HorizontalOptions="Start"
+                       Margin="20,0,0,15"
+                       FontSize="16" />
+            </VerticalStackLayout>
+        </dx:DXBorder>
     </ContentPage.Content>
 </ContentPage>

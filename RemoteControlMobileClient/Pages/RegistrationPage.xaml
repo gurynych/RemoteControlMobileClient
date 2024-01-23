@@ -2,11 +2,78 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RemoteControlMobileClient.Pages.RegistrationPage"
-             Title="RegistrationPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxdf="clr-namespace:DevExpress.Maui.DataForm;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             ios:Page.UseSafeArea="true"
+             Title="RegistrationPage"
+             BindingContext="{x:Binding RegistrationViewModel, Source={StaticResource vmLocator}}">
+    <dx:DXBorder VerticalOptions="Center"
+                 CornerRadius="15"
+                 Margin="10"
+                 Padding="10"
+                 BackgroundColor="#3f3f3f">
+        <VerticalStackLayout>
+            <dxe:TextEdit Text="{x:Binding Login}"
+                          ErrorText="{x:Binding LoginError}"
+                          HasError="{x:Binding LoginHasError}"
+                          LabelText="Имя пользователя"
+                          LabelColor="#efefef"
+                          BorderColor="#efefef"
+                          FocusedLabelColor="#efefef"
+                          FocusedBorderColor="#efefef"
+                          ClearIconVisibility="Auto"
+                          AutofillContentType="Username"
+                          Margin="0,15" />
+
+            <dxe:TextEdit Text="{x:Binding Email}"
+                          ErrorText="{x:Binding EmailError}"
+                          HasError="{x:Binding EmailHasError}"
+                          LabelText="Почта"
+                          LabelColor="#efefef"
+                          BorderColor="#efefef"
+                          FocusedLabelColor="#efefef"
+                          FocusedBorderColor="#efefef"
+                          ClearIconVisibility="Auto"
+                          AutofillContentType="EmailAddress"
+                          Margin="0,15" />
+
+            <dxe:PasswordEdit Text="{x:Binding Password}"
+                              ErrorText="{x:Binding PasswordError}"
+                              HasError="{x:Binding PasswordHasError}"
+                              LabelText="Пароль"
+                              LabelColor="#efefef"
+                              BorderColor="#efefef"
+                              FocusedLabelColor="#efefef"
+                              FocusedBorderColor="#efefef"
+                              PasswordIconVisibility="Auto"
+                              ClearIconVisibility="Auto"
+                              AutofillContentType="Password"
+                              Margin="0,15" />
+
+            <dx:DXButton Content="Регистрация"
+                         Command="{x:Binding RegisterCommand}"                         
+                         Margin="0,15"
+                         BackgroundColor="#1f1f1f"
+                         PressedBackgroundColor="#3f3f3f"
+                         DisabledBackgroundColor="#5f5f5f"
+                         TextColor="#efefef"
+                         PressedTextColor="#cfcfcf"
+                         DisabledTextColor="#afafaf" />
+
+            <dx:DXButton Content="Авторизация"
+                         Command="{x:Binding GoToAutorizationCommand}"                        
+                         Margin="0,15"                         
+                         BackgroundColor="#1f1f1f"
+                         PressedBackgroundColor="#3f3f3f"
+                         DisabledBackgroundColor="#5f5f5f"
+                         TextColor="#efefef"
+                         PressedTextColor="#cfcfcf"
+                         DisabledTextColor="#afafaf" />
+        </VerticalStackLayout>
+    </dx:DXBorder>
 </ContentPage>

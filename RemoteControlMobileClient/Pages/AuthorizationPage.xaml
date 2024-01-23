@@ -2,37 +2,67 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="RemoteControlMobileClient.Pages.AuthorizationPage"
-             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
              xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
              xmlns:dxg="clr-namespace:DevExpress.Maui.DataGrid;assembly=DevExpress.Maui.DataGrid"
+             xmlns:dxga="clr-namespace:DevExpress.Maui.Gauges;assembly=DevExpress.Maui.Gauges"
              xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
              xmlns:dxdf="clr-namespace:DevExpress.Maui.DataForm;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
              xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              ios:Page.UseSafeArea="true"
              Title="AuthorizationPage"
-             BindingContext="{x:Binding AuthentificationViewModel, Source={StaticResource vmLocator}}">
-    <VerticalStackLayout VerticalOptions="Center">
-        <dxe:TextEdit Text="{x:Binding AuthEmail}"
-                      ErrorText="{x:Binding AuthEmailError}"
-                      HasError="{x:Binding AuthEmailHasError}"
-                      LabelText="Email"
-                      ClearIconVisibility="Auto"
-                      AutofillContentType="EmailAddress" />
-        <dxe:PasswordEdit Text="{x:Binding AuthPassword}"
-                          ErrorText="{x:Binding AuthPasswordError}"
-                          HasError="{x:Binding AuthPasswordHasError}"
-                          LabelText="Password"
-                          PasswordIconVisibility="Auto"
+             BindingContext="{x:Binding AuthrizationViewModel, Source={StaticResource vmLocator}}">
+    <dx:DXBorder VerticalOptions="Center"
+                 CornerRadius="15"
+                 Margin="10"
+                 Padding="10"
+                 BackgroundColor="#3f3f3f">
+        <VerticalStackLayout>
+            <dxe:TextEdit Text="{x:Binding Email}"
+                          ErrorText="{x:Binding EmailError}"
+                          HasError="{x:Binding EmailHasError}"
+                          LabelText="Почта"
+                          LabelColor="#efefef"
+                          BorderColor="#efefef"
+                          FocusedLabelColor="#efefef"
+                          FocusedBorderColor="#efefef"
                           ClearIconVisibility="Auto"
-                          AutofillContentType="Password">
-        </dxe:PasswordEdit>
-        <Button Text="Вход"
-                Style="{StaticResource PrimaryButton}"
-                Command="{x:Binding AuthorizeCommand}" 
-                Margin="5,10"/>
-        <Button Text="Регистрация"
-                Style="{StaticResource PrimaryButton}"
-                Command="{x:Binding AuthorizeCommand}"
-                Margin="5,10" />
-    </VerticalStackLayout>
+                          AutofillContentType="EmailAddress"
+                          Margin="0,15" />
+
+            <dxe:PasswordEdit Text="{x:Binding Password}"
+                              ErrorText="{x:Binding PasswordError}"
+                              HasError="{x:Binding PasswordHasError}"
+                              LabelColor="#efefef"
+                              BorderColor="#efefef"
+                              FocusedLabelColor="#efefef"
+                              FocusedBorderColor="#efefef"
+                              LabelText="Пароль"
+                              PasswordIconVisibility="Auto"
+                              ClearIconVisibility="Auto"
+                              AutofillContentType="Password"
+                              Margin="0,15" />
+
+            <dx:DXButton Content="Вход"
+                         Command="{x:Binding AuthorizeCommand}"                         
+                         Margin="0,15"
+                         BackgroundColor="#1f1f1f"
+                         PressedBackgroundColor="#3f3f3f"
+                         DisabledBackgroundColor="#5f5f5f"
+                         TextColor="#efefef"
+                         PressedTextColor="#cfcfcf"
+                         DisabledTextColor="#afafaf" />
+
+            <dx:DXButton Content="Регистрация"                         
+                         Command="{x:Binding GoToRegistrationCommand}"                         
+                         Margin="0,15"
+                         BackgroundColor="#1f1f1f"
+                         PressedBackgroundColor="#3f3f3f"
+                         DisabledBackgroundColor="#5f5f5f"
+                         TextColor="#efefef"
+                         PressedTextColor="#cfcfcf"
+                         DisabledTextColor="#afafaf" />
+        </VerticalStackLayout>
+    </dx:DXBorder>
 </ContentPage>

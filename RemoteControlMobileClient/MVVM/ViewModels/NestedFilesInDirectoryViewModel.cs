@@ -46,24 +46,6 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
             this.apiProvider = apiProvider;
             this.communicator = communicator;
             this.factory = commandFactoryService.CreateCommandFactory();
-#if DEBUG
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    try
-                    {
-                        BaseIntent intent = await communicator.ReceiveIntentAsync();
-                        BaseNetworkCommandResult result = await intent.CreateCommand(factory).ExecuteAsync();
-                        await communicator.SendMessageAsync(new NetworkMessage.NetworkMessage(result));
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            });
-#endif
         }
 
         [RelayCommand]
@@ -96,7 +78,11 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
                 CancellationTokenSource tokenSource = new CancellationTokenSource(50000);
                 NestedFilesInDirectory =
                     await apiProvider.GetNestedFilesInfoInDirectoryAsync(User, Device.Id, path, tokenSource.Token);
-                AllData = NestedFilesInDirectory.NestedDirectoriesInfo.Cast<object>().Concat(NestedFilesInDirectory.NestedFilesInfo.Cast<object>());
+                if (NestedFilesInDirectory != null)
+                {
+                    AllData = NestedFilesInDirectory.NestedDirectoriesInfo.Cast<object>().Concat(NestedFilesInDirectory.NestedFilesInfo.Cast<object>());
+                }
+
                 IsBusy = false;
             }
         }

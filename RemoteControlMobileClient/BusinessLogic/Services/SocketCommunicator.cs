@@ -4,6 +4,7 @@ using NetworkMessage.Communicator;
 using NetworkMessage.Cryptography.AsymmetricCryptography;
 using NetworkMessage.Cryptography.KeyStore;
 using NetworkMessage.Cryptography.SymmetricCryptography;
+using NetworkMessage.CommandsResults.ConcreteCommandResults;
 using NetworkMessage.Intents;
 using NetworkMessage;
 using System.Net.Sockets;
@@ -11,6 +12,7 @@ using RemoteControlMobileClient.BusinessLogic.Services.Partial;
 using NetworkMessage.CommandFactory;
 using RemoteControlMobileClient.MVVM.LifeCycles;
 using System.Diagnostics;
+using NetworkMessage.Intents.ConcreteIntents;
 
 namespace RemoteControlMobileClient.BusinessLogic.Services
 {
@@ -29,47 +31,33 @@ namespace RemoteControlMobileClient.BusinessLogic.Services
             factory = commandFactoryService.CreateCommandFactory();
         }
 
-        public override async Task<bool> HandshakeAsync(IProgress<int> progress = null, CancellationToken token = default)
-        {
-            try
-            {
-                INetworkMessage message;
-                BaseNetworkCommandResult result;
-                byte[] publicKey = keyStore.GetPublicKey();
-                result = new PublicKeyResult(publicKey);
-                message = new NetworkMessage.NetworkMessage(result);
-                await SendMessageAsync(message, progress, token).ConfigureAwait(false);
+		public override async Task<bool> HandshakeAsync(IProgress<long> progress = null, CancellationToken token = default)
+		{
+			try
+			{
+				BaseNetworkCommandResult result;
+				byte[] publicKey = keyStore.GetPublicKey();
+				result = new PublicKeyResult(publicKey);
+				await SendObjectAsync(result, progress, token).ConfigureAwait(false);
 
-                GuidIntent guidIntent = await ReceiveNetworkObjectAsync<GuidIntent>(progress, token);
-                if (guidIntent == null) throw new NullReferenceException(nameof(guidIntent));
+				GuidIntent guidIntent = await ReceiveAsync<GuidIntent>(progress, token);
+				if (guidIntent == null) throw new NullReferenceException(nameof(guidIntent));
 
-                BaseNetworkCommand command = guidIntent.CreateCommand(factory);
-                result = await command.ExecuteAsync();
-                message = new NetworkMessage.NetworkMessage(result);
-                await SendMessageAsync(message, progress, token);
+				INetworkCommand command = guidIntent.CreateCommand(factory);
+				result = await command.ExecuteAsync();
+				await SendObjectAsync(result, progress, token);
 
-                SuccessfulTransferResult transferResult =
-                    await ReceiveNetworkObjectAsync<SuccessfulTransferResult>(token: token);
-                return IsConnected = transferResult.IsSuccessful;
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex.Message);
-                return IsConnected = false;
-            }
+				SuccessfulTransferResult transferResult =
+					await ReceiveAsync<SuccessfulTransferResult>(token: token);
+				return IsConnected = true;
+			}
+			catch (Exception ex)
+			{
+				Debug.Write(ex.Message);
+				return IsConnected = false;
+			}
 
-            /*DownloadFileIntent fileIntent = await ReceiveNetworkObjectAsync<DownloadFileIntent>(progress, token).ConfigureAwait(false);
-            if (fileIntent == null)
-            {
-                throw new NullReferenceException(nameof(fileIntent));
-            }            
-            command = fileIntent.CreateCommand(factory);
-            result = await command.ExecuteAsync();
-            message = new NetworkMessage.NetworkMessage(result);
-            await SendMessageAsync(message, progress, token).ConfigureAwait(false);
-            byte[] file = await File.ReadAllBytesAsync(fileIntent.Path, token);
-            message = new NetworkMessage.NetworkMessage(file);
-            await SendMessageAsync(message, progress, token).ConfigureAwait(false);*/
-        }
-    }
+
+		}
+	}
 }

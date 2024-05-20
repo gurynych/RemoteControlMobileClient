@@ -1,5 +1,6 @@
 ﻿using NetworkMessage.CommandFactory;
 using NetworkMessage.CommandsResults;
+using NetworkMessage.CommandsResults.ConcreteCommandResults;
 using Newtonsoft.Json;
 using RemoteControlMobileClient.BusinessLogic.Models;
 using RemoteControlMobileClient.BusinessLogic.Services.Partial;
@@ -13,13 +14,16 @@ namespace RemoteControlMobileClient.BusinessLogic.Services
 {
     internal class ServerAPIProviderService : ITransient
     {
-        public const string ServerAddress = "192.168.183.254";
-        private const string AuthtorizeAPIUri = $"http://{ServerAddress}:5170/api/AuthentificationAPI/AuthorizeFromDevice";
-        private const string RegisterAPIUri = $"http://{ServerAddress}:5170/api/AuthentificationAPI/RegisterFromDevice";
-        private const string GetNestedFilesInfoInDirectoryUri = $"http://{ServerAddress}:5170/api/DeviceAPI/GetNestedFilesInfoInDirectory";
-        private const string GetConnectedDeviceUri = $"http://{ServerAddress}:5170/api/DeviceAPI/GetConnectedDevice";
-        private const string DownloadFileUri = $"http://{ServerAddress}:5170/api/DeviceAPI/DownloadFile";
-        private readonly ICommandFactory factory;
+		public const string ServerAddress = "192.168.1.162";
+		public const string ServerPort = "5000";
+		private const string AuthtorizeAPIUri = $"http://{ServerAddress}:{ServerPort}/api/AuthentificationAPI/AuthorizeFromDevice";
+		private const string RegisterAPIUri = $"http://{ServerAddress}:{ServerPort}/api/AuthentificationAPI/RegisterFromDevice";
+		private const string AuthorizeWithTokenUri = $"http://{ServerAddress}:{ServerPort}/api/AuthentificationAPI/AuthorizeWithToken";
+		private const string GetNestedFilesInfoInDirectoryUri = $"http://{ServerAddress}:{ServerPort}/api/DeviceAPI/GetNestedFilesInfoInDirectory";
+		private const string GetConnectedDeviceUri = $"http://{ServerAddress}:{ServerPort}/api/DeviceAPI/GetConnectedDevices";
+		private const string GetUserByTokenUri = $"http://{ServerAddress}:{ServerPort}/api/AuthentificationAPI/GetUserByToken";
+		private const string DownloadFileUri = $"http://{ServerAddress}:{ServerPort}/api/DeviceAPI/DownloadFile";
+		private readonly ICommandFactory factory;
 
         public ServerAPIProviderService(CommandFactoryService commandFactoryService)
         {

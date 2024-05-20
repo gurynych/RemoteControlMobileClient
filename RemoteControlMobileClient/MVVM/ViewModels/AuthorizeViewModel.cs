@@ -64,7 +64,7 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
             if (!accept) return;
 
             var tokenSource = new CancellationTokenSource(200000);
-            User user = new("gurila@gurila.com", "gurila");//User(Email, Password); //("gurila@gurila.com", "gurila");  
+            User user = new User(Email, Password); //("gurila@gurila.com", "gurila");  
             byte[] publicKey = await apiProvider.UserAuthorizationUseAPIAsync(user, tokenSource.Token);
             try
             {

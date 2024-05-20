@@ -15,7 +15,7 @@
              BindingContext="{x:Binding NestedFilesInDirectoryViewModel, Source={StaticResource vmLocator}}">
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior EventName="Loaded"
-                                        Command="{Binding LoadConnectedDevicesCommand}" />
+                                        Command="{x:Binding LoadConnectedDevicesCommand}" />
     </ContentPage.Behaviors>
     <ContentPage.Resources>
         <ResourceDictionary>

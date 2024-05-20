@@ -8,7 +8,7 @@
 		<SingleProject>true</SingleProject>
 		<RootNamespace>RemoteControlMobileClient</RootNamespace>
 		<UseInterpreter>true</UseInterpreter>
-		<MauiVersion>8.0.3</MauiVersion>
+		<MauiVersion>8.0.21</MauiVersion>
 
 		<!-- Display name -->
 		<ApplicationTitle>RemoteControlMobileClient</ApplicationTitle>
@@ -40,26 +40,27 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+	
 	<ItemGroup>
 	  <None Remove="Resources\Images\download_btn.svg" />
 	</ItemGroup>
 
 
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="6.1.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-		<PackageReference Include="DevExpress.Maui.CollectionView" Version="23.2.3" />
-		<PackageReference Include="DevExpress.Maui.Core" Version="23.2.3" />
-		<PackageReference Include="DevExpress.Maui.Editors" Version="23.2.3" />
-		<PackageReference Include="DevExpress.Maui.DataGrid" Version="23.2.3" />
-		<PackageReference Include="DevExpress.Maui.Controls" Version="23.2.3" />
-		<PackageReference Include="DevExpress.Maui.Gauges" Version="23.2.3" />
+		<PackageReference Include="DevExpress.Maui.CollectionView" Version="24.1.1-alpha-24085" />
+		<PackageReference Include="DevExpress.Maui.Core" Version="24.1.1-alpha-24085" />
+		<PackageReference Include="DevExpress.Maui.Editors" Version="24.1.1-alpha-24085" />
+		<PackageReference Include="DevExpress.Maui.DataGrid" Version="24.1.1-alpha-24085" />
+		<PackageReference Include="DevExpress.Maui.Controls" Version="24.1.1-alpha-24085" />
+		<PackageReference Include="DevExpress.Maui.Gauges" Version="24.1.1-alpha-24085" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<Reference Include="NetworkMessage">
-		  <HintPath>..\..\NetworkMessage.Mobile\NetworkMessage.Mobile\bin\Debug\net7.0-android33.0\NetworkMessage.dll</HintPath>
+		  <HintPath>..\..\NetworkMessage\NetworkMessage\bin\Debug\net8.0\NetworkMessage.dll</HintPath>
 		</Reference>
 		<Reference Include="NetworkMessage.Mobile">
-		  <HintPath>..\..\NetworkMessage.Mobile\NetworkMessage.Mobile\bin\Debug\net7.0-android33.0\NetworkMessage.Mobile.dll</HintPath>
+		  <HintPath>..\..\NetworkMessage.Mobile\NetworkMessage.Mobile\bin\Debug\net8.0-android\NetworkMessage.Mobile.dll</HintPath>
 		</Reference>
 		<TrimmableAssembly Include="DevExpress.Data.v23.1" />
 	</ItemGroup>
@@ -82,4 +83,14 @@
 
 
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadUnhandledDeviceExceptionRemoteControlMobileClientHideInfoBar="True" /></VisualStudio></ProjectExtensions>
+
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.21" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
+	</ItemGroup>
 </Project>

@@ -11,6 +11,9 @@ using RemoteControlMobileClient.Pages;
 using RemoteControlMobileClient.BusinessLogic.Models;
 using RemoteControlMobileClient.BusinessLogic.Services;
 using DevExpress.Data.Mask.Internal;
+using NetworkMessage.Exceptions;
+using System;
+using CommunityToolkit.Maui.Alerts;
 
 namespace RemoteControlMobileClient.MVVM.ViewModels
 {
@@ -29,10 +32,10 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
         private string actualAction;
 
         [ObservableProperty]
-        private int receiveProcessProgress;
+        private long receiveProcessProgress;
 
         [ObservableProperty]
-        private int sendProcessProgress;
+        private long sendProcessProgress;
 
         [ObservableProperty]
         private User user;
@@ -58,37 +61,49 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
         private Task StartListen()
         {
             tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
             return Task.Run(async () =>
             {
-                Progress<int> receiveProgress = new Progress<int>((i) => ReceiveProcessProgress = i);
-                Progress<int> sendProgress = new Progress<int>((i) => SendProcessProgress = i);
+                Progress<long> receiveProgress = new Progress<long>((i) => ReceiveProcessProgress = i);
+                Progress<long> sendProgress = new Progress<long>((i) => SendProcessProgress = i);
 
-                while (!tokenSource.IsCancellationRequested)
-                {
-                    try
-                    {
-                        ActualAction = "Получение намерения\n";
-                        ReceiveProcessProgress = 0;
-                        BaseIntent intent = await communicator.ReceiveIntentAsync(receiveProgress, tokenSource.Token).ConfigureAwait(false);
-                        if (intent == null)
-                        {
-                            continue;
-                        }
+				while (!token.IsCancellationRequested)
+				{
+					try
+					{
+						BaseIntent intent = await communicator.ReceiveAsync(token: token).ConfigureAwait(false);
+						token.ThrowIfCancellationRequested();
+						if (intent == null)
+						{
+							continue;
+						}
+						
+						BaseNetworkCommandResult result = await intent
+							.CreateCommand(factory)
+							.ExecuteAsync()
+						.ConfigureAwait(false);
 
-                        SendProcessProgress = 0;
-                        ActualAction += $"Полученное намерение: {intent.IntentType}\n";
-                        ActualAction += $"Выполнение команды\n";
-                        BaseNetworkCommandResult result = await intent.CreateCommand(factory).ExecuteAsync().ConfigureAwait(false);
-                        ActualAction += "Отправка результа команды\n";
-                        await communicator.SendMessageAsync(new NetworkMessage.NetworkMessage(result), sendProgress, tokenSource.Token).ConfigureAwait(false);
-                        ActualAction += "Результат отправлен";
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                }
-            });
+						await communicator.SendObjectAsync(result, token: token).ConfigureAwait(false);
+					}
+					catch (DeviceNotConnectedException notConnEx)
+					{
+                        await Snackbar.Make("Устройство отключено").Show();
+						Debug.WriteLine(notConnEx.Message);
+						return;
+					}
+					catch (OperationCanceledException operationCanncelEx)
+					{
+						await Snackbar.Make("Устройство отключено").Show();
+						Debug.WriteLine(operationCanncelEx.Message);
+						return;
+					}
+					catch (Exception ex)
+					{
+						await Snackbar.Make("Устройство отключено").Show();
+						Debug.WriteLine(ex.Message);
+					}
+				}
+			});
         }
 
         [RelayCommand]

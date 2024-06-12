@@ -71,6 +71,7 @@
 		<PackageReference Include="DevExpress.Maui.DataGrid" Version="24.1.1-alpha-24085" />
 		<PackageReference Include="DevExpress.Maui.Controls" Version="24.1.1-alpha-24085" />
 		<PackageReference Include="DevExpress.Maui.Gauges" Version="24.1.1-alpha-24085" />
+		<PackageReference Include="MySql.Data" Version="8.4.0" />
 		<PackageReference Include="NetworkMessage.Mobile" Version="1.1.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<TrimmableAssembly Include="DevExpress.Data.v23.1" />

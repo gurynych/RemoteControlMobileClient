@@ -37,67 +37,69 @@ namespace RemoteControlMobileClient.BusinessLogic.Services
             factory = commandFactoryService.CreateCommandFactory();
         }
 
-        /// <summary>
-        /// Асинхронный метод для авторизации пользователя через API сервера
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns>Открытый ключ сервера</returns>
-        /// <exception cref="WebException"/>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="FormatException"/>
-        /// <exception cref="SEHException"/>
-        public async Task<byte[]> UserAuthorizationUseAPIAsync(UserDTO user, CancellationToken token = default)
-        {
-            using HttpClient client = new HttpClient();
-            try
-            {
-                FormUrlEncodedContent parameters = await GetAuthParametersAsync(user, token);
-                HttpResponseMessage response = await client.PostAsync(AuthtorizeAPIUri, parameters, token);
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseContent = await response.Content.ReadAsStringAsync(token);
-                    return Convert.FromBase64String(responseContent[1..^1]);
-                }
+		/// <summary>
+		/// Асинхронный метод для авторизации пользователя через API сервера
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns>Открытый ключ сервера</returns>
+		/// <exception cref="WebException"/>
+		/// <exception cref="ArgumentNullException"/>
+		/// <exception cref="FormatException"/>
+		/// <exception cref="SEHException"/>
+		public async Task<Response> UserAuthorizationUseAPIAsync(UserDTO user, CancellationToken token = default)
+		{
+			using HttpClient client = new HttpClient();
+			try
+			{
+				FormUrlEncodedContent parameters = await GetAuthParametersAsync(user, token);
+				HttpResponseMessage response = await client.PostAsync(AuthtorizeAPIUri, parameters, token);
+				if (response.IsSuccessStatusCode)
+				{
+					string responseContent = await response.Content.ReadAsStringAsync(token);
+					return new Response(Convert.FromBase64String(responseContent[1..^1]), "Успешно");
+				}
 
-                Debug.WriteLine("Ошибка при выполнении запроса: " + response.StatusCode);
-                return default;
-            }
-            catch (Exception ex)
-            {
-                return default;
-            }
-        }
+				string message = await response.Content.ReadAsStringAsync(token);
+				Debug.WriteLine("Ошибка при выполнении запроса: " + response.StatusCode);
+				return new Response(message);
+			}
+			catch (Exception ex)
+			{
+				return default;
+			}
+		}
 
-        /// <summary>
-        /// Асинхронный метод для регистрации пользователя через API сервера
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns>Открытый ключ сервера</returns>
-        /// <exception cref="WebException"/>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="FormatException"/>      
-        /// <exception cref="SEHException"/>
-        public async Task<byte[]> UserRegistrationUseAPIAsync(UserDTO user, CancellationToken token = default)
-        {
-            using HttpClient client = new HttpClient();
-            try
-            {
-                FormUrlEncodedContent parameters = await GetRegParametersAsync(user, token);
-                HttpResponseMessage response = await client.PostAsync(RegisterAPIUri, parameters, token);
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseContent = await response.Content.ReadAsStringAsync(token);
-                    return Convert.FromBase64String(responseContent[1..^1]);
-                }
+		/// <summary>
+		/// Асинхронный метод для регистрации пользователя через API сервера
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns>Открытый ключ сервера</returns>
+		/// <exception cref="WebException"/>
+		/// <exception cref="ArgumentNullException"/>
+		/// <exception cref="FormatException"/>      
+		/// <exception cref="SEHException"/>
+		public async Task<Response> UserRegistrationUseAPIAsync(UserDTO user, CancellationToken token = default)
+		{
+			using HttpClient client = new HttpClient();
+			try
+			{
+				FormUrlEncodedContent parameters = await GetRegParametersAsync(user, token);
+				HttpResponseMessage response = await client.PostAsync(RegisterAPIUri, parameters, token);
+				if (response.IsSuccessStatusCode)
+				{
+					string responseContent = await response.Content.ReadAsStringAsync(token);
+					return new Response(Convert.FromBase64String(responseContent[1..^1]), "Успешно");
+				}
 
-                Debug.WriteLine("Ошибка при выполнении запроса: " + response.StatusCode);
-                return default;
-            }
-            catch (Exception ex)
-            {
-                return default;
-            }
-        }
+				string message = await response.Content.ReadAsStringAsync(token);
+				Debug.WriteLine("Ошибка при выполнении запроса: " + response.StatusCode);
+				return new Response(message);
+			}
+			catch (Exception ex)
+			{
+				return default;
+			}
+		}
 
 		/// <summary>
 		/// Асинхронный метод для авторизации пользователя через токен
@@ -490,6 +492,24 @@ namespace RemoteControlMobileClient.BusinessLogic.Services
 			};
 
 			return new FormUrlEncodedContent(parameters);
+		}
+	}
+
+	public struct Response
+	{
+		public byte[] PublicKey { get; }
+
+		public string Message { get; }
+
+		public Response(string message)
+		{
+			Message = message;
+		}
+
+		public Response(byte[] publicKey, string message)
+		{
+			PublicKey = publicKey;
+			Message = message;
 		}
 	}
 

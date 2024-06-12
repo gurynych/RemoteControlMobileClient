@@ -64,11 +64,18 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
 
             var tokenSource = new CancellationTokenSource(20000);
             UserDTO user = new UserDTO(Email, Password); //("gurila@gurila.com", "gurila");  
-            byte[] publicKey = await apiProvider.UserAuthorizationUseAPIAsync(user, tokenSource.Token);
+            Response response = await apiProvider.UserAuthorizationUseAPIAsync(user, tokenSource.Token);
+            byte[] publicKey = response.PublicKey;
             try
             {
-                if (publicKey == null) return;
-                bool connected =
+				if (publicKey == default)
+				{
+                    await Toast.Make(response.Message, CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
+					return;
+					//throw new NullReferenceException();
+				}
+
+				bool connected =
                     await communicator.ConnectAsync(ServerAPIProvider.ServerAddress, 11000, tokenSource.Token);
                 if (!connected) return;
 

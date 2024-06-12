@@ -8,6 +8,7 @@ using NetworkMessage.Cryptography.KeyStore;
 using RemoteControlMobileClient.BusinessLogic.KeyStore;
 using NetworkMessage.Communicator;
 using RemoteControlMobileClient.BusinessLogic.Services;
+using System.Reflection;
 
 namespace RemoteControlMobileClient
 {
@@ -30,7 +31,7 @@ namespace RemoteControlMobileClient
                     fonts.AddFont("roboto-regular.ttf", "Roboto");
                 });
 
-            IEnumerable<Type> assemblyTypes = typeof(AuthorizationViewModel).Assembly.GetTypes().Where(x => x.IsClass);
+            IEnumerable<Type> assemblyTypes = Assembly.GetCallingAssembly().GetTypes().Where(x => x.IsClass);
             foreach (Type type in assemblyTypes)
             {
                 Type[] interfaces = type.GetInterfaces();                

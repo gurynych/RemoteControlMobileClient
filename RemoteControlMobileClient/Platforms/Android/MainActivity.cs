@@ -16,5 +16,5 @@ namespace RemoteControlMobileClient
 
             base.OnActivityResult(requesCode, resultCode, data);
         }
-    }
+	}
 }

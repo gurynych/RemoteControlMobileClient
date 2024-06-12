@@ -1,29 +1,29 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using RemoteControlMobileClient.BusinessLogic.Models;
+using RemoteControlMobileClient.BusinessLogic.DTO;
 using RemoteControlMobileClient.BusinessLogic.Services;
 using RemoteControlMobileClient.MVVM.LifeCycles;
 using RemoteControlMobileClient.Pages;
-using Device = RemoteControlMobileClient.BusinessLogic.Models.Device;
+using DeviceDTO = RemoteControlMobileClient.BusinessLogic.DTO.DeviceDTO;
 
 namespace RemoteControlMobileClient.MVVM.ViewModels
 {
     [QueryProperty(nameof(User), "User")]
     //[QueryProperty(nameof(ConnectedDevices), "ConnectedDevices")]
-    internal partial class ConnectedDeviceViewModel : ObservableObject, ITransient
+    public partial class ConnectedDeviceViewModel : ObservableObject, ITransient
     {
-        private readonly ServerAPIProviderService apiProvider;
+        private readonly ServerAPIProvider apiProvider;
 
         [ObservableProperty]
-        private User user;
+        private UserDTO user;
 
         [ObservableProperty]
-        private List<Device> connectedDevices;
+        private List<DeviceDTO> connectedDevices;
 
         [ObservableProperty]
         private bool isBusy;
 
-        public ConnectedDeviceViewModel(ServerAPIProviderService apiProvider)
+        public ConnectedDeviceViewModel(ServerAPIProvider apiProvider)
         {
             this.apiProvider = apiProvider;
         }
@@ -50,9 +50,9 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
         }
 
         [RelayCommand]
-        private Task GetNestedFilesInDirectory(Device device)
+        private Task OpenDeviceInfo(DeviceDTO device)
         {
-            return Shell.Current.GoToAsync(nameof(NestedFilesInDirectoryPage), new Dictionary<string, object>()
+			return Shell.Current.GoToAsync(nameof(DeviceInfoPage), new Dictionary<string, object>()
             { 
                 { "User", User },
                 { "Device", device }

@@ -2,7 +2,7 @@
 
 namespace RemoteControlMobileClient.BusinessLogic.Services.Partial
 {
-    internal partial class CommandFactoryService
+    public partial class CommandFactoryService
     {
         public partial ICommandFactory CreateCommandFactory() => new NetworkMessage.Mobile.Platforms.Android.AndroidCommandFactory();
     }

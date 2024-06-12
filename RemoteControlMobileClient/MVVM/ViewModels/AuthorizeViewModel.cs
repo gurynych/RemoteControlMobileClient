@@ -1,19 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NetworkMessage.Communicator;
-using RemoteControlMobileClient.BusinessLogic.Models;
+using RemoteControlMobileClient.BusinessLogic.Helpers;
+using RemoteControlMobileClient.BusinessLogic.DTO;
 using RemoteControlMobileClient.BusinessLogic.Services;
 using RemoteControlMobileClient.BusinessLogic.Services.Partial;
 using RemoteControlMobileClient.MVVM.LifeCycles;
 using RemoteControlMobileClient.Pages;
+using System.Text;
 
 namespace RemoteControlMobileClient.MVVM.ViewModels
 {
-    internal partial class AuthorizationViewModel : ObservableValidator, ITransient
+    public partial class AuthorizationViewModel : ObservableValidator, ITransient
     {
-        private readonly ServerAPIProviderService apiProvider;
+        private readonly ServerAPIProvider apiProvider;
         private readonly TcpCryptoClientCommunicator communicator;
 
         [ObservableProperty]
@@ -38,7 +41,7 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
         [ObservableProperty]
         private bool emailHasError = false;
 
-        public AuthorizationViewModel(ServerAPIProviderService apiProvider, TcpCryptoClientCommunicator communicator)
+        public AuthorizationViewModel(ServerAPIProvider apiProvider, TcpCryptoClientCommunicator communicator)
         {
             this.apiProvider = apiProvider;
             this.communicator = communicator;
@@ -54,39 +57,45 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
             };
         }
 
-        [RelayCommand(CanExecute = nameof(IsValidForm))]    //(CanExecute = nameof(CheckFields))
+        [RelayCommand(CanExecute = nameof(IsValidForm))]
         private async Task Authorize()
         {            
             if (!IsValidForm()) return;
 
-            RequestPermissionsService requestPermissionsService = new RequestPermissionsService();
-            bool accept = await requestPermissionsService.RequestPermission();
-            if (!accept) return;
-
             var tokenSource = new CancellationTokenSource(200000);
-            User user = new User(Email, Password); //("gurila@gurila.com", "gurila");  
+            UserDTO user = new UserDTO(Email, Password); //("gurila@gurila.com", "gurila");  
             byte[] publicKey = await apiProvider.UserAuthorizationUseAPIAsync(user, tokenSource.Token);
             try
             {
                 if (publicKey == null) return;
                 bool connected =
-                    await communicator.ConnectAsync(ServerAPIProviderService.ServerAddress, 11000, tokenSource.Token);
+                    await communicator.ConnectAsync(ServerAPIProvider.ServerAddress, 11000, tokenSource.Token);
                 if (!connected) return;
 
-                communicator.SetExternalPublicKey(publicKey);
+                user.AuthToken = publicKey;
+				publicKey = publicKey[..^Encoding.UTF8.GetBytes(Email).Length];
+				communicator.SetExternalPublicKey(publicKey);
                 int repeat = 0;
                 while (repeat < 10)
                 {
                     bool success = await communicator.HandshakeAsync(token: tokenSource.Token);
                     if (success)
                     {
-                        user.AuthToken = publicKey;
                         tokenSource.Dispose();
+						await UserStorageHelper.WriteUserAsync(user);
+
+						RequestPermissionsService requestPermissionsService = new RequestPermissionsService();
+						bool accept = await requestPermissionsService.RequestPermission();
+						while (!accept)
+                        {
+                            await Toast.Make("Для продолжения необходимо выдать разрешение", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
+                            accept = await requestPermissionsService.RequestPermission();
+						}
+
                         await Shell.Current.GoToAsync(nameof(MainPage), new Dictionary<string, object>()
                             {
                                 { "User", user }
                             });
-
                         return;
                     }
 

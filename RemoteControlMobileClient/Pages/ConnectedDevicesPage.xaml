@@ -12,7 +12,7 @@
              Title="ConnectedDevicesPage"
              BindingContext="{x:Binding ConnectedDeviceViewModel, Source={StaticResource vmLocator}}">
     <ContentPage.Behaviors>
-        <toolkit:EventToCommandBehavior EventName="Loaded"
+        <toolkit:EventToCommandBehavior EventName="Appearing"
                                         Command="{Binding LoadConnectedDevicesCommand}" />
     </ContentPage.Behaviors>
     <ContentPage.Resources>
@@ -96,7 +96,7 @@
                                 <dx:DXButton Content="Команды"
                                              HorizontalOptions="Start"
                                              Margin="40,20"
-                                             Command="{x:Binding BindingContext.GetNestedFilesInDirectoryCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}"
+                                             Command="{x:Binding BindingContext.OpenDeviceInfoCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}"
                                              CommandParameter="{x:Binding}"
                                              TextColor="{DynamicResource TextColorOnDarkButton}"
                                              BackgroundColor="{DynamicResource ButtonOnCardColorDarkTheme}"

@@ -16,9 +16,9 @@ using NetworkMessage.Intents.ConcreteIntents;
 
 namespace RemoteControlMobileClient.BusinessLogic.Services
 {
-    internal class SocketCommunicator : TcpCryptoClientCommunicator, ISingleton
+    public class SocketCommunicator : TcpCryptoClientCommunicator, ISingleton
     {
-        public const string ServerIP = ServerAPIProviderService.ServerAddress;
+        public const string ServerIP = ServerAPIProvider.ServerAddress;
         public const int ServerPort = 11000;
         private ICommandFactory factory;
 

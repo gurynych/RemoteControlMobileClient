@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RemoteControlMobileClient.BusinessLogic.Models
+﻿namespace RemoteControlMobileClient.BusinessLogic.DTO
 {
-    internal class User
+	public class UserDTO
     {        
         public string Login { get; set; }
 
@@ -16,17 +10,17 @@ namespace RemoteControlMobileClient.BusinessLogic.Models
 
         public byte[] AuthToken { get; set; }
 
-        public User()
+        public UserDTO()
         {            
         }
 
-        public User(string email, string password)
+        public UserDTO(string email, string password)
         {            
             Email = email;
             Password = password;
         }
 
-        public User(string login, string email, string password) : this(email, password)
+        public UserDTO(string login, string email, string password) : this(email, password)
         {            
             Login = login;
         }

@@ -9,11 +9,5 @@
        Shell.FlyoutBehavior="Disabled"
        Shell.NavBarIsVisible="false"
        BindingContext="{x:Binding AppShellViewModel, Source={StaticResource vmLocator}}">
-    <Shell.Behaviors>
-        <toolkit:EventToCommandBehavior EventName="Loaded"
-                                        Command="{Binding SetStartUpPageCommand}" />
-    </Shell.Behaviors>
-    <ShellContent ContentTemplate="{DataTemplate pages:AuthorizationPage}"
-                  Route="AuthorizationPage" />
-
+    <ShellContent Content="{pages:StartupPage}" />
 </Shell>

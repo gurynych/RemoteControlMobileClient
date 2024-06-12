@@ -2,7 +2,7 @@
 
 namespace RemoteControlMobileClient.MVVM
 {
-    internal class ViewModelLocator
+    public class ViewModelLocator
     {
         public AuthorizationViewModel AuthrizationViewModel => MauiProgram.GetRequiredService<AuthorizationViewModel>();
 
@@ -12,8 +12,14 @@ namespace RemoteControlMobileClient.MVVM
 
         public ConnectedDeviceViewModel ConnectedDeviceViewModel => MauiProgram.GetRequiredService<ConnectedDeviceViewModel>();
 
-        public NestedFilesInDirectoryViewModel NestedFilesInDirectoryViewModel => MauiProgram.GetRequiredService<NestedFilesInDirectoryViewModel>();
+        public DeviceFolderViewModel DeviceFolderViewModel => MauiProgram.GetRequiredService<DeviceFolderViewModel>();
 
         public AppShellViewModel AppShellViewModel => MauiProgram.GetRequiredService<AppShellViewModel>();
-    }
+
+        public StartupViewModel StartupViewModel => MauiProgram.GetRequiredService<StartupViewModel>();
+
+        public DeviceInfoViewModel DeviceInfoViewModel => MauiProgram.GetRequiredService<DeviceInfoViewModel>();
+
+        public RunningProgramsViewModel RunningProgramsViewModel => MauiProgram.GetRequiredService<RunningProgramsViewModel>();
+	}
 }

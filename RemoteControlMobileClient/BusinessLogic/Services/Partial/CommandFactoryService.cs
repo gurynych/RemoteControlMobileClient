@@ -3,7 +3,7 @@ using RemoteControlMobileClient.MVVM.LifeCycles;
 
 namespace RemoteControlMobileClient.BusinessLogic.Services.Partial
 {
-    internal partial class CommandFactoryService : ITransient
+    public partial class CommandFactoryService : ITransient
     {
         public partial ICommandFactory CreateCommandFactory();
     }

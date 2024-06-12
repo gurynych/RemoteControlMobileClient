@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using NetworkMessage.Communicator;
-using RemoteControlMobileClient.BusinessLogic.Models;
+using RemoteControlMobileClient.BusinessLogic.DTO;
 using RemoteControlMobileClient.BusinessLogic.Services;
 using RemoteControlMobileClient.BusinessLogic.Services.Partial;
 using RemoteControlMobileClient.MVVM.LifeCycles;
@@ -9,12 +9,13 @@ using RemoteControlMobileClient.Pages;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace RemoteControlMobileClient.MVVM.ViewModels
 {
-    internal partial class RegistrationViewModel : ObservableValidator, ITransient
+    public partial class RegistrationViewModel : ObservableValidator, ITransient
     {
-        private readonly ServerAPIProviderService apiProvider;
+        private readonly ServerAPIProvider apiProvider;
         private readonly TcpCryptoClientCommunicator communicator;
 
         [ObservableProperty]
@@ -55,7 +56,7 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
         [ObservableProperty]
         private bool loginHasError = false;        
 
-        public RegistrationViewModel(ServerAPIProviderService apiProvider, TcpCryptoClientCommunicator communicator)
+        public RegistrationViewModel(ServerAPIProvider apiProvider, TcpCryptoClientCommunicator communicator)
         {
             ErrorsChanged += (sender, args) =>
             {
@@ -83,23 +84,24 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
             if (accept)
             {
                 var tokenSource = new CancellationTokenSource(20000);
-                User user = new User(Login, Email, Password); //("gurila@gurila.com", "gurila");  
+                UserDTO user = new UserDTO(Login, Email, Password); //("gurila@gurila.com", "gurila");  
                 byte[] publicKey = await apiProvider.UserRegistrationUseAPIAsync(user, tokenSource.Token);
                 try
                 {
                     if (publicKey == null) return;
                     bool connected =
-                        await communicator.ConnectAsync(ServerAPIProviderService.ServerAddress, 11000, tokenSource.Token);
+                        await communicator.ConnectAsync(ServerAPIProvider.ServerAddress, 11000, tokenSource.Token);
                     if (!connected) return;
 
-                    communicator.SetExternalPublicKey(publicKey);
+					user.AuthToken = publicKey;
+					publicKey = publicKey[..^Encoding.UTF8.GetBytes(Email).Length];
+					communicator.SetExternalPublicKey(publicKey);
                     int repeat = 0;
                     while (repeat < 10)
                     {
                         bool success = await communicator.HandshakeAsync(token: tokenSource.Token);
                         if (success)
                         {
-                            user.AuthToken = publicKey;
                             tokenSource.Dispose();
                             await Shell.Current.GoToAsync(nameof(MainPage), new Dictionary<string, object>()
                             {

@@ -8,7 +8,7 @@ using System.Diagnostics;
 using RemoteControlMobileClient.BusinessLogic.Services.Partial;
 using NetworkMessage.CommandFactory;
 using RemoteControlMobileClient.Pages;
-using RemoteControlMobileClient.BusinessLogic.Models;
+using RemoteControlMobileClient.BusinessLogic.DTO;
 using RemoteControlMobileClient.BusinessLogic.Services;
 using DevExpress.Data.Mask.Internal;
 using NetworkMessage.Exceptions;
@@ -18,11 +18,11 @@ using CommunityToolkit.Maui.Alerts;
 namespace RemoteControlMobileClient.MVVM.ViewModels
 {
     [QueryProperty(nameof(User), "User")]
-    internal partial class MainViewModel : ObservableObject, ITransient
+    public partial class MainViewModel : ObservableObject, ITransient
     {
         private readonly ICommandFactory factory;
         private readonly TcpCryptoClientCommunicator communicator;
-        private readonly ServerAPIProviderService apiProvider;
+        private readonly ServerAPIProvider apiProvider;
         private CancellationTokenSource tokenSource;
 
         [ObservableProperty]
@@ -38,9 +38,9 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
         private long sendProcessProgress;
 
         [ObservableProperty]
-        private User user;
+        private UserDTO user;
 
-        public MainViewModel(TcpCryptoClientCommunicator communicator, CommandFactoryService commandFactoryService, ServerAPIProviderService apiProvider)
+        public MainViewModel(TcpCryptoClientCommunicator communicator, CommandFactoryService commandFactoryService, ServerAPIProvider apiProvider)
         {
             this.communicator = communicator;
             this.apiProvider = apiProvider;
@@ -54,7 +54,7 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
             IsConneted = false;
             var tokenSource = new CancellationTokenSource(30000);
             IsConneted =
-                await communicator.ReconnectWithHandshakeAsync(ServerAPIProviderService.ServerAddress, 11000, token: tokenSource.Token);
+                await communicator.ReconnectWithHandshakeAsync(ServerAPIProvider.ServerAddress, 11000, token: tokenSource.Token);
         }
 
         [RelayCommand]

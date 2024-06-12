@@ -1,6 +1,6 @@
-﻿namespace RemoteControlMobileClient.BusinessLogic.Models
+﻿namespace RemoteControlMobileClient.BusinessLogic.DTO
 {
-    internal class Device
+    public class DeviceDTO
     {
         public int Id { get; set; }
 

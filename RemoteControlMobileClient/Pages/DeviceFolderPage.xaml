@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RemoteControlMobileClient.Pages.DeviceFolderPage"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
+             xmlns:dxga="clr-namespace:DevExpress.Maui.Gauges;assembly=DevExpress.Maui.Gauges"
+             xmlns:dxcv="clr-namespace:DevExpress.Maui.CollectionView;assembly=DevExpress.Maui.CollectionView"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:dts="clr-namespace:RemoteControlMobileClient.MVVM.DataTemplates"
+             xmlns:converters="clr-namespace:RemoteControlMobileClient.MVVM.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             ios:Page.UseSafeArea="true"
+             Title="NestedFilesInDirectoryPage"
+             BindingContext="{x:Binding DeviceFolderViewModel, Source={StaticResource vmLocator}}">
+    <!--<ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing"
+                                        Command="{x:Binding LoadNestedFilesInRootDirectoryCommand}" />
+    </ContentPage.Behaviors>-->
+    <ContentPage.Resources>
+        <converters:BytesToReadStringConverter x:Key="BytesToReadStringConverter" />
+        <converters:NumberToProgressPercentConverter x:Key="NumberToProgressPercentConverter" />
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="auto,auto,*, auto, auto"
+          Padding="5">
+
+        <Grid ColumnDefinitions="*,*,*,*"
+              Grid.Row="1">
+            <Label Grid.Column="0"
+                   Text="Имя"
+                   TextColor="#efefef"
+                   HorizontalTextAlignment="Center" />
+            <Label Grid.Column="1"
+                   Text="Дата изменения"
+                   TextColor="#efefef"
+                   HorizontalTextAlignment="Center" />
+            <Label Grid.Column="2"
+                   Text="Размер Мб"
+                   TextColor="#efefef"
+                   HorizontalTextAlignment="Center" />
+            <Label Grid.Column="3"
+                   Text="Действие"
+                   TextColor="#efefef"
+                   HorizontalTextAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <dxcv:DXCollectionView ItemsSource="{x:Binding FileInfoList}"
+                                   SelectionMode="Single"
+                                   DoubleTapCommand="{x:Binding LoadNestedFilesInDirectoryCommand}">
+                <dxcv:DXCollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,*,*,*"
+                              Margin="0,2.5">
+                            <Label Grid.Column="0"
+                                   Text="{x:Binding Name}"
+                                   TextColor="#efefef" />
+                            <Label Grid.Column="1"
+                                   Text="{x:Binding ChangingDate}"
+                                   TextColor="#efefef"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Grid.Column="2"
+                                   Text="{x:Binding FileLength, Converter={StaticResource BytesToReadStringConverter}}"
+                                   TextColor="#efefef"
+                                   HorizontalTextAlignment="Center" />
+                            <dx:DXButton Grid.Column="3"
+                                         CommandParameter="{x:Binding}"
+                                         Icon="download_btn"
+                                         IconColor="#efefef"
+                                         PressedIconColor="#cfcfcf"
+                                         VerticalContentAlignment="Center"
+                                         TextVerticalAlignment="Start"
+                                         VerticalOptions="Start"
+                                         ButtonType="ToolButton"
+                                         DisabledIconColor="#afafaf"
+                                         Command="{x:Binding BindingContext.DownloadSelectedItemCommand, Source={RelativeSource Mode=FindAncestor, AncestorType={x:Type ContentPage}}}" />
+                        </Grid>
+                    </DataTemplate>
+                </dxcv:DXCollectionView.ItemTemplate>
+            </dxcv:DXCollectionView>
+        </Grid>
+
+        <dxga:RadialProgressBar Grid.Row="2"
+                                IsIndeterminate="True"
+                                HeightRequest="100"
+                                WidthRequest="100"
+                                StartAngle="-90"
+                                Thickness="10"
+                                ValueIndicatorThickness="10"
+                                ValueIndicatorFill="#efefef"
+                                VerticalOptions="Center"
+                                SweepAngle="360"
+                                IsVisible="{x:Binding IsBusy}" />
+
+        <dx:DXBorder CornerRadius="10"
+                     Grid.Row="2"
+                     VerticalOptions="Center"
+                     BackgroundColor="#efefef"
+                     Margin="10,0"
+                     Padding="10,20,10,10">
+            <VerticalStackLayout>
+                <Label TextColor="Black"
+                       Text="{x:Binding DownloadableFileName, StringFormat='{}Загрузка файла {0}'}"
+                       FontSize="Large"
+                       HorizontalTextAlignment="Center" 
+                       Margin="0,0,0,5"/>
+                <Label Text="{x:Binding PercentDownloaded, StringFormat='{}Загружено: {0}%'}"
+                       TextColor="Black"/>
+                <ProgressBar Progress="{x:Binding PercentDownloaded, Converter={StaticResource NumberToProgressPercentConverter}, ConverterParameter=100}"
+                             ProgressColor="Black" />
+                <Label TextColor="Black"
+                       Margin="0,0,0,10">
+                    <Label.Text>
+                        <MultiBinding StringFormat="Загружено {0} из {1}">
+                            <Binding Path="DownloadableBytesAmount"
+                                     Converter="{StaticResource BytesToReadStringConverter}" />
+                            <Binding Path="TotalBytesAmount"
+                                     Converter="{StaticResource BytesToReadStringConverter}" />
+                        </MultiBinding>
+                    </Label.Text>
+                </Label>
+                
+                <dx:DXButton Content="Остановить загрузку"
+                             BackgroundColor="Black"
+                             TextColor="#efefef"
+                             PressedBackgroundColor="#efefef"
+                             PressedTextColor="Black"
+                             Command="{Binding DownloadSelectedItemCancelCommand}"/>
+            </VerticalStackLayout>
+            <dx:DXBorder.Triggers>
+                <DataTrigger Binding="{Binding IsDownload}"
+                             Value="True"
+                             TargetType="dx:DXBorder">
+                    <Setter Property="IsVisible"
+                            Value="Visible" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsDownload}"
+                             Value="False"
+                             TargetType="dx:DXBorder">
+                    <Setter Property="IsVisible"
+                            Value="Collapse" />
+                </DataTrigger>
+            </dx:DXBorder.Triggers>
+        </dx:DXBorder>
+
+        <dx:DXButton Grid.Row="3"
+                     Content="Загрузить файлы"
+                     Command="{x:Binding LoadNestedFilesInRootDirectoryCommand}"
+                     Margin="20,0"
+                     TextColor="#1f1f1f"
+                     BackgroundColor="#efefef"
+                     PressedTextColor="#3f3f3f"
+                     PressedBackgroundColor="#cfcfcf"
+                     DisabledBackgroundColor="#5f5f5f"
+                     DisabledTextColor="#afafaf" />
+
+        <dx:DXButton Grid.Row="4"
+                     Content="Назад"
+                     Margin="20"
+                     Command="{x:Binding GoToConnectedDevicesPageCommand}"
+                     TextColor="#1f1f1f"
+                     BackgroundColor="#efefef"
+                     PressedTextColor="#3f3f3f"
+                     PressedBackgroundColor="#cfcfcf"
+                     DisabledBackgroundColor="#5f5f5f"
+                     DisabledTextColor="#afafaf" />
+    </Grid>
+</ContentPage>

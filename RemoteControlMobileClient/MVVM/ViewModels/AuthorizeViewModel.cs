@@ -62,7 +62,7 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
         {            
             if (!IsValidForm()) return;
 
-            var tokenSource = new CancellationTokenSource(200000);
+            var tokenSource = new CancellationTokenSource(20000);
             UserDTO user = new UserDTO(Email, Password); //("gurila@gurila.com", "gurila");  
             byte[] publicKey = await apiProvider.UserAuthorizationUseAPIAsync(user, tokenSource.Token);
             try
@@ -83,15 +83,6 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
                     {
                         tokenSource.Dispose();
 						await UserStorageHelper.WriteUserAsync(user);
-
-						RequestPermissionsService requestPermissionsService = new RequestPermissionsService();
-						bool accept = await requestPermissionsService.RequestPermission();
-						while (!accept)
-                        {
-                            await Toast.Make("Для продолжения необходимо выдать разрешение", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
-                            accept = await requestPermissionsService.RequestPermission();
-						}
-
                         await Shell.Current.GoToAsync(nameof(MainPage), new Dictionary<string, object>()
                             {
                                 { "User", user }

@@ -10,6 +10,7 @@ using RemoteControlMobileClient.BusinessLogic.Services.Partial;
 using RemoteControlMobileClient.MVVM.LifeCycles;
 using RemoteControlMobileClient.Pages;
 using System.Text;
+using System.Diagnostics;
 
 namespace RemoteControlMobileClient.MVVM.ViewModels
 {
@@ -29,25 +30,9 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
 		[RelayCommand]
 		public async Task Startup()
 		{			
-			ProgressMessage = "Запрос разрешений";
-			RequestPermissionsService requestPermissionsService = new RequestPermissionsService();
-			bool accept = await requestPermissionsService.RequestPermission();
-			if (!accept)
-			{
-				await Toast.Make("Для продолжения необходимо выдать разрешение", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
-				accept = await requestPermissionsService.RequestPermission();
-				
-				if (!accept)
-				{
-					await Toast.Make("Необходимо выдать разрешение. Приложение будет закрыто", CommunityToolkit.Maui.Core.ToastDuration.Short).Show();
-					Environment.Exit(0);
-				}
-			}
-
 			ProgressMessage = "Получение сохраненных данных пользователя";
 			UserDTO user = await UserStorageHelper.ReadUserAsync();
-			byte[] userToken = user?.AuthToken;
-			if (userToken == null)
+			if (user?.AuthToken == null)
 			{
 				await Shell.Current.GoToAsync(nameof(AuthorizationPage));
 				return;
@@ -57,7 +42,7 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
 			try
 			{
 				ProgressMessage = "Получение ключа для обмена инфомарцией от сервера";
-				byte[] serverPublicKey = await apiProvider.UserAuthorizationWithTokenUseAPIAsync(userToken, tokenSource.Token);
+				byte[] serverPublicKey = await apiProvider.UserAuthorizationWithTokenUseAPIAsync(user.AuthToken, tokenSource.Token);
 				if (serverPublicKey == default || serverPublicKey.IsEmptyOrSingle())
 				{
 					await Toast.Make("Не удалось получить ключ от сервера", CommunityToolkit.Maui.Core.ToastDuration.Long).Show();
@@ -76,7 +61,6 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
 				}
 
 				ProgressMessage = "Обмен данными с сервером";
-				userToken = userToken[..^Encoding.UTF8.GetBytes(user.Email).Length];
 				communicator.SetExternalPublicKey(serverPublicKey);
 				int repeat = 0;
 				while (repeat < 10)
@@ -84,7 +68,7 @@ namespace RemoteControlMobileClient.MVVM.ViewModels
 					bool success = await communicator.HandshakeAsync(token: tokenSource.Token);
 					if (success)
 					{
-						user = await apiProvider.GetUserByToken(userToken, tokenSource.Token);
+						user = await apiProvider.GetUserByToken(user.AuthToken, tokenSource.Token);
 						await UserStorageHelper.WriteUserAsync(user);
 						await Shell.Current.GoToAsync(nameof(MainPage), new Dictionary<string, object>()
 							{
